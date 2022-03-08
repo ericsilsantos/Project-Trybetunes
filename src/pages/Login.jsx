@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
-import Loading from './Loading';
+import Loading from '../componets/Loading';
 
 const LENGTH_MIN = 3;
 const userAPI = require('../services/userAPI');
