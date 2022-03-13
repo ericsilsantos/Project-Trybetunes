@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import MusicCard from '../componets/MusicCard';
 import Header from '../componets/Header';
 import getMuscis from '../services/musicsAPI';
+import Loading from '../componets/Loading';
+import { getFavoriteSongs } from '../services/favoriteSongsAPI';
 
 class Album extends React.Component {
   constructor() {
@@ -12,12 +14,19 @@ class Album extends React.Component {
       nameArtist: '',
       nameAlbum: '',
       musics: [],
+      favoriteAPI: false,
+      favoriteList: [],
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { match: { params: { id } } } = this.props;
     this.handleCardMusic(id);
+    const list = await getFavoriteSongs();
+    this.setState({
+      favoriteList: list,
+      favoriteAPI: true,
+    });
   }
 
   handleCardMusic = async (id) => {
@@ -31,30 +40,49 @@ class Album extends React.Component {
     });
   }
 
+  // handleChecked = (music) => {
+  //   const { favoriteList } = this.state;
+  //   const listTrackId = favoriteList.map((favorite) => favorite.trackId);
+  //   console.log(listTrackId.includes(music.trackId));
+  //   // console.log(listTrackId);
+  //   let bool = 'false';
+  //   if (listTrackId.includes(music.trackId)) {
+  //     bool = 'true';
+  //   }
+  //   return bool;
+  // }
+
   render() {
-    const { nameArtist, nameAlbum, artAlbum, musics } = this.state;
+    const { favoriteList } = this.state;
+    const listTrackId = favoriteList.map((favorite) => favorite.trackId);
+    const { nameArtist, nameAlbum, artAlbum, musics, favoriteAPI } = this.state;
     return (
       <div data-testid="page-album">
         <Header />
         <img src={ artAlbum } alt={ nameArtist } />
         <h2 data-testid="artist-name">{nameArtist}</h2>
         <h3 data-testid="album-name">{nameAlbum}</h3>
-        {musics.map((music, index) => (
-          index === 0 ? false : (
-            <MusicCard
-              key={ music.trackId }
-              trackId={ music.trackId }
-              trackName={ music.trackName }
-              previewUrl={ music.previewUrl }
-            />
-          )))}
+        {!favoriteAPI ? <Loading /> : (
+          musics.map((music, index) => (
+            index === 0 ? false : (
+              <MusicCard
+                key={ music.trackId }
+                music={ music }
+                checkedFavorite={ listTrackId.includes(music.trackId) }
+                // checkedFavorite={ this.handleChecked(music) }
+              />
+            ))))}
       </div>
     );
   }
 }
 
 Album.propTypes = {
-  match: PropTypes.string.isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
 
 export default Album;
