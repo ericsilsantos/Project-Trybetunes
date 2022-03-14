@@ -31,7 +31,6 @@ class Album extends React.Component {
 
   handleCardMusic = async (id) => {
     const musicsAlbum = await getMuscis(id);
-    console.log(musicsAlbum);
     this.setState({
       musics: musicsAlbum,
       artAlbum: musicsAlbum[0].artworkUrl100,
@@ -39,18 +38,6 @@ class Album extends React.Component {
       nameAlbum: musicsAlbum[0].collectionName,
     });
   }
-
-  // handleChecked = (music) => {
-  //   const { favoriteList } = this.state;
-  //   const listTrackId = favoriteList.map((favorite) => favorite.trackId);
-  //   console.log(listTrackId.includes(music.trackId));
-  //   // console.log(listTrackId);
-  //   let bool = 'false';
-  //   if (listTrackId.includes(music.trackId)) {
-  //     bool = 'true';
-  //   }
-  //   return bool;
-  // }
 
   render() {
     const { favoriteList } = this.state;
@@ -68,8 +55,7 @@ class Album extends React.Component {
               <MusicCard
                 key={ music.trackId }
                 music={ music }
-                checkedFavorite={ listTrackId.includes(music.trackId) }
-                // checkedFavorite={ this.handleChecked(music) }
+                listTrackId={ listTrackId }
               />
             ))))}
       </div>

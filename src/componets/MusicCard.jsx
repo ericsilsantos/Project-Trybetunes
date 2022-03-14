@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { addSong } from '../services/favoriteSongsAPI';
+import { addSong, removeSong } from '../services/favoriteSongsAPI';
 import Loading from './Loading';
 
 class MusicCard extends React.Component {
@@ -12,25 +12,41 @@ class MusicCard extends React.Component {
     };
   }
 
-  handleClickFavorite = async () => {
-    const { music } = this.props;
-    console.log(music);
-    this.setState({ loadind: true });
-    await addSong(music);
+  componentDidMount() {
+    const { listTrackId, music } = this.props;
+    const bool = listTrackId.includes(music.trackId);
     this.setState({
-      loadind: false,
-      checked: true,
+      checked: bool,
     });
+  }
+
+  handleClickFavorite = async ({ target }) => {
+    const { music } = this.props;
+    const { checked } = target;
+
+    if (!checked) {
+      this.setState({ loadind: true });
+      await removeSong(music);
+      this.setState({
+        loadind: false,
+        checked: false,
+      });
+    } else {
+      this.setState({ loadind: true });
+      await addSong(music);
+      this.setState({
+        loadind: false,
+        checked: true,
+      });
+    }
   }
 
   render() {
     const { loadind, checked } = this.state;
-    const { checkedFavorite } = this.props;
     const { music: { trackName, previewUrl, trackId } } = this.props;
     return (
       <div>
         <span>{trackName}</span>
-        <span>{checkedFavorite}</span>
         <audio data-testid="audio-component" src={ previewUrl } controls>
           <track kind="captions" />
         </audio>
@@ -42,7 +58,7 @@ class MusicCard extends React.Component {
             Favorita
             <input
               id={ trackId }
-              checked={ (checkedFavorite || checked) }
+              checked={ checked }
               onChange={ this.handleClickFavorite }
               type="checkbox"
             />
@@ -58,7 +74,7 @@ MusicCard.propTypes = {
     previewUrl: PropTypes.string.isRequired,
     trackId: PropTypes.number.isRequired,
   }).isRequired,
-  checkedFavorite: PropTypes.bool.isRequired,
+  listTrackId: PropTypes.arrayOf(PropTypes.number.isRequired).isRequired,
 };
 
 export default MusicCard;
