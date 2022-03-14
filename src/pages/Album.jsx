@@ -56,6 +56,7 @@ class Album extends React.Component {
                 key={ music.trackId }
                 music={ music }
                 listTrackId={ listTrackId }
+                click={ () => {} }
               />
             ))))}
       </div>

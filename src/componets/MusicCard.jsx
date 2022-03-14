@@ -44,6 +44,7 @@ class MusicCard extends React.Component {
   render() {
     const { loadind, checked } = this.state;
     const { music: { trackName, previewUrl, trackId } } = this.props;
+    const { click } = this.props;
     return (
       <div>
         <span>{trackName}</span>
@@ -59,7 +60,8 @@ class MusicCard extends React.Component {
             <input
               id={ trackId }
               checked={ checked }
-              onChange={ this.handleClickFavorite }
+              onChange={ click }
+              onClick={ this.handleClickFavorite }
               type="checkbox"
             />
           </label>)}
@@ -75,6 +77,11 @@ MusicCard.propTypes = {
     trackId: PropTypes.number.isRequired,
   }).isRequired,
   listTrackId: PropTypes.arrayOf(PropTypes.number.isRequired).isRequired,
+  click: PropTypes.func.isRequired,
 };
+
+// MusicCard.defaultProps = {
+//   click: '',
+// };
 
 export default MusicCard;
