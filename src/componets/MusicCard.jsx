@@ -80,8 +80,4 @@ MusicCard.propTypes = {
   click: PropTypes.func.isRequired,
 };
 
-// MusicCard.defaultProps = {
-//   click: '',
-// };
-
 export default MusicCard;
